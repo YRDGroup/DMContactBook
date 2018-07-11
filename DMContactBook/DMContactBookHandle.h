@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
 #ifdef __IPHONE_9_0
 #import <Contacts/Contacts.h>
 #endif
