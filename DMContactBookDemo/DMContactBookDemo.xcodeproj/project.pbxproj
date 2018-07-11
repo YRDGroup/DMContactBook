@@ -16,6 +16,11 @@
 		EB04B44F20F5FEF9006518FB /* DMContactBookPersonModel.m in Sources */ = {isa = PBXBuildFile; fileRef = EB04B44E20F5FEF9006518FB /* DMContactBookPersonModel.m */; };
 		EB04B45220F5FF49006518FB /* DMGetAddressBook.m in Sources */ = {isa = PBXBuildFile; fileRef = EB04B45120F5FF49006518FB /* DMGetAddressBook.m */; };
 		EB04B45520F5FF77006518FB /* DMContactBookHandle.m in Sources */ = {isa = PBXBuildFile; fileRef = EB04B45420F5FF77006518FB /* DMContactBookHandle.m */; };
+		EB04B45820F61374006518FB /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB04B45720F61374006518FB /* AddressBook.framework */; };
+		EB04B45A20F61378006518FB /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB04B45920F61378006518FB /* AddressBookUI.framework */; };
+		EB04B45C20F61397006518FB /* Contacts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB04B45B20F61397006518FB /* Contacts.framework */; };
+		EB04B45E20F6139A006518FB /* ContactsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB04B45D20F61399006518FB /* ContactsUI.framework */; };
+		EB04B46020F613C3006518FB /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB04B45F20F613C3006518FB /* UIKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +40,11 @@
 		EB04B45120F5FF49006518FB /* DMGetAddressBook.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DMGetAddressBook.m; sourceTree = "<group>"; };
 		EB04B45320F5FF77006518FB /* DMContactBookHandle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DMContactBookHandle.h; sourceTree = "<group>"; };
 		EB04B45420F5FF77006518FB /* DMContactBookHandle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DMContactBookHandle.m; sourceTree = "<group>"; };
+		EB04B45720F61374006518FB /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
+		EB04B45920F61378006518FB /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
+		EB04B45B20F61397006518FB /* Contacts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Contacts.framework; path = System/Library/Frameworks/Contacts.framework; sourceTree = SDKROOT; };
+		EB04B45D20F61399006518FB /* ContactsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ContactsUI.framework; path = System/Library/Frameworks/ContactsUI.framework; sourceTree = SDKROOT; };
+		EB04B45F20F613C3006518FB /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -42,6 +52,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EB04B46020F613C3006518FB /* UIKit.framework in Frameworks */,
+				EB04B45E20F6139A006518FB /* ContactsUI.framework in Frameworks */,
+				EB04B45C20F61397006518FB /* Contacts.framework in Frameworks */,
+				EB04B45A20F61378006518FB /* AddressBookUI.framework in Frameworks */,
+				EB04B45820F61374006518FB /* AddressBook.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -53,6 +68,7 @@
 			children = (
 				EB04B43420F5FE4D006518FB /* DMContactBookDemo */,
 				EB04B43320F5FE4D006518FB /* Products */,
+				EB04B45620F61374006518FB /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -93,6 +109,18 @@
 			);
 			name = DMContactBook;
 			path = ../../DMContactBook;
+			sourceTree = "<group>";
+		};
+		EB04B45620F61374006518FB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				EB04B45F20F613C3006518FB /* UIKit.framework */,
+				EB04B45D20F61399006518FB /* ContactsUI.framework */,
+				EB04B45B20F61397006518FB /* Contacts.framework */,
+				EB04B45920F61378006518FB /* AddressBookUI.framework */,
+				EB04B45720F61374006518FB /* AddressBook.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
