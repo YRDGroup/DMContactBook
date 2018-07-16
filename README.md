@@ -9,6 +9,8 @@ Example apps for iOS are included with the project. Here is one simple usage pat
   [DMGetAddressBook getAllAddressBookDataViaJSON:^(NSString *json) {
         NSLog(@"%@",json);
     }];
+    
+//json result
 {
   "msg" : "授权成功",
   "code" : "1",
