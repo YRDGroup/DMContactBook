@@ -9,10 +9,11 @@
 #import <Foundation/Foundation.h>
 
 @interface DMContactBookPersonModel : NSObject
-/** 联系人姓名*/
-@property (nonatomic, copy) NSString *name;
-
-/** 只拿手机号11位判断 **/
-@property (nonatomic, copy) NSString *phone;
-
+@property (nonatomic, copy) NSString *fullName;
+@property (nonatomic, copy) NSString *nickyName;
+@property (nonatomic, copy) NSString *familyName;
+@property (nonatomic, copy) NSString *org;
+@property (nonatomic, copy) NSString *note;
+@property (nonatomic, copy) NSString *type;
+@property (nonatomic, copy) NSString *number;
 @end

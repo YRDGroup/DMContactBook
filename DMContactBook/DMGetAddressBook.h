@@ -35,7 +35,6 @@ typedef void(^AddressBookDictBlock)(NSDictionary<NSString *,NSArray *> *addressB
 /**
  *  请求用户是否授权APP访问通讯录的权限,建议在APPDeletegate.m中的didFinishLaunchingWithOptions方法中调用
  */
-+ (BOOL)requestAddressBookAuthorization;
 
 /**
  *  获取原始顺序排列的所有联系人字典(以后便于上传数据库用)

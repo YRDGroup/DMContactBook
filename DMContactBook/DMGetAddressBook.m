@@ -14,39 +14,28 @@
 
 @implementation DMGetAddressBook
 
-+ (BOOL)requestAddressBookAuthorization
-{
-    __block BOOL block_result;
++ (void)getAllAddressBookDataViaJSON:(void (^)(NSString *json))returnBlock{
+
+    NSMutableDictionary *resultDic = [NSMutableDictionary dictionaryWithCapacity:3];
     [[DMContactBookHandle shareInstance] requestAuthorizationWithSuccessBlock:^(BOOL result) {
         if (result) {
-              [DMGetAddressBook getOrderAddressBook:nil authorizationFailure:nil];
-        }
-        block_result = result;
-    }];
-    return block_result;
-}
-
-+ (void)getAllAddressBookDataViaJSON:(void (^)(NSString *json))returnBlock{
-    BOOL result =  [self requestAddressBookAuthorization];
-    //未授权或者授权失败
-    NSMutableDictionary *resultDic = [NSMutableDictionary dictionaryWithCapacity:3];
-    if (!result) {
-        [resultDic setObject:@"-1" forKey:@"code"];
-        [resultDic setObject:@"授权失败或未授权" forKey:@"msg"];
-        [resultDic setObject:@[] forKey:@"dataArray"];
-         [DMGetAddressBook handleJsonData:resultDic returnBlock:returnBlock];
-    } else {
-        [resultDic setObject:@"1" forKey:@"code"];
-        [resultDic setObject:@"授权成功" forKey:@"msg"];
-        [DMGetAddressBook getOriginalDictAddressBook:^(NSArray<NSDictionary *> *addressBookArray) {
-            [resultDic setObject:addressBookArray forKey:@"dataArray"];
-            [DMGetAddressBook handleJsonData:resultDic returnBlock:returnBlock];
-        } authorizationFailure:^{
+            [DMGetAddressBook getOrderAddressBook:nil authorizationFailure:nil];
+            [resultDic setObject:@"1" forKey:@"code"];
+            [resultDic setObject:@"授权成功" forKey:@"msg"];
+            [DMGetAddressBook getOriginalDictAddressBook:^(NSArray<NSDictionary *> *addressBookArray) {
+                [resultDic setObject:addressBookArray forKey:@"dataArray"];
+                [DMGetAddressBook handleJsonData:resultDic returnBlock:returnBlock];
+            } authorizationFailure:^{
+                [resultDic setObject:@[] forKey:@"dataArray"];
+                [DMGetAddressBook handleJsonData:resultDic returnBlock:returnBlock];
+            }];
+        } else {
+            [resultDic setObject:@"-1" forKey:@"code"];
+            [resultDic setObject:@"授权失败或未授权" forKey:@"msg"];
             [resultDic setObject:@[] forKey:@"dataArray"];
             [DMGetAddressBook handleJsonData:resultDic returnBlock:returnBlock];
-        }];
-    }
-    
+        }
+    }];
 }
 
 + (void)handleJsonData:(NSDictionary *)resultDic returnBlock:(void (^)(NSString *json))returnBlock
@@ -73,19 +62,15 @@
 {
     // 将耗时操作放到子线程
     dispatch_queue_t queue = dispatch_queue_create("addressBook.array", DISPATCH_QUEUE_SERIAL);
-    
     dispatch_async(queue, ^{
-        
         NSMutableArray *array = [NSMutableArray array];
-        
-        [[DMContactBookHandle shareInstance] getDictAddressBookDataSource:^(NSMutableDictionary *dict) {
-            [array addObject:dict];
+        [[DMContactBookHandle shareInstance] getDictAddressBookDataSource:^(NSArray<NSDictionary *> *dicArray) {
+            [array addObjectsFromArray:dicArray];
         } authorizationFailure:^{
             dispatch_async(dispatch_get_main_queue(), ^{
                 failure ? failure() : nil;
             });
         }];
-        
         // 将联系人数组回调到主线程
         dispatch_async(dispatch_get_main_queue(), ^{
             contactBookArray ? contactBookArray(array) : nil ;
@@ -103,9 +88,9 @@
     dispatch_async(queue, ^{
         
         NSMutableArray *array = [NSMutableArray array];
-        [[DMContactBookHandle shareInstance] getAddressBookDataSource:^(DMContactBookPersonModel *model) {
+        [[DMContactBookHandle shareInstance] getAddressBookDataSource:^(NSArray<DMContactBookPersonModel *> *models) {
             
-            [array addObject:model];
+            [array addObjectsFromArray:models];
             
         } authorizationFailure:^{
             
@@ -133,19 +118,20 @@
     dispatch_async(queue, ^{
         
         NSMutableDictionary *addressBookDict = [NSMutableDictionary dictionary];
-        [[DMContactBookHandle shareInstance] getAddressBookDataSource:^(DMContactBookPersonModel *model) {
+        [[DMContactBookHandle shareInstance] getAddressBookDataSource:^(NSArray<DMContactBookPersonModel *> *models) {
             //获取到姓名的大写首字母
-            NSString *firstLetterString = [self getFirstLetterFromString:model.name];
+            DMContactBookPersonModel *model = models.firstObject;
+            NSString *firstLetterString = [self getFirstLetterFromString:model.fullName];
             //如果该字母对应的联系人模型不为空,则将此联系人模型添加到此数组中
             if (addressBookDict[firstLetterString])
             {
-                [addressBookDict[firstLetterString] addObject:model];
+                [addressBookDict[firstLetterString] addObjectsFromArray:models];
             }
             //没有出现过该首字母，则在字典中新增一组key-value
             else
             {
                 //创建新发可变数组存储该首字母对应的联系人模型
-                NSMutableArray *arrGroupNames = [NSMutableArray arrayWithObject:model];
+                NSMutableArray *arrGroupNames = [NSMutableArray arrayWithArray:models];
                 //将首字母-姓名数组作为key-value加入到字典中
                 [addressBookDict setObject:arrGroupNames forKey:firstLetterString];
             }

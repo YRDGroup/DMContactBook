@@ -23,7 +23,6 @@
 
 - (IBAction)buttonPressed:(id)sender {
     
-    
     [DMGetAddressBook getAllAddressBookDataViaJSON:^(NSString *json) {
         NSLog(@"%@",json);
     }];

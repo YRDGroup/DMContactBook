@@ -18,10 +18,10 @@
 #define DMContactBook_IOS9_LATER ([[UIDevice currentDevice] systemVersion].floatValue > 9.0 ? YES : NO )
 
 /** 0.一个联系人模型的相关信息 方便获取显示到UI **/
-typedef void(^DMContactBookPersonModelBlock)(DMContactBookPersonModel *model);
+typedef void(^DMContactBookPersonModelBlock)(NSArray<DMContactBookPersonModel *>* models);
 
 /** 1.一个联系人相关的字典数据 方便获取转JSON上传 **/
-typedef void(^DMContactBookPersonDictBlock)(NSMutableDictionary *dict);
+typedef void(^DMContactBookPersonDictBlock)(NSArray<NSDictionary *> *dicArray);
 
 /** 授权失败的Block*/
 typedef void(^AuthorizationFailure)(void);

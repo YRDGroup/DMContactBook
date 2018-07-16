@@ -16,10 +16,10 @@
 		EB04B44F20F5FEF9006518FB /* DMContactBookPersonModel.m in Sources */ = {isa = PBXBuildFile; fileRef = EB04B44E20F5FEF9006518FB /* DMContactBookPersonModel.m */; };
 		EB04B45220F5FF49006518FB /* DMGetAddressBook.m in Sources */ = {isa = PBXBuildFile; fileRef = EB04B45120F5FF49006518FB /* DMGetAddressBook.m */; };
 		EB04B45520F5FF77006518FB /* DMContactBookHandle.m in Sources */ = {isa = PBXBuildFile; fileRef = EB04B45420F5FF77006518FB /* DMContactBookHandle.m */; };
-		EB04B45820F61374006518FB /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB04B45720F61374006518FB /* AddressBook.framework */; };
-		EB04B45A20F61378006518FB /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB04B45920F61378006518FB /* AddressBookUI.framework */; };
-		EB04B45C20F61397006518FB /* Contacts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB04B45B20F61397006518FB /* Contacts.framework */; };
-		EB04B45E20F6139A006518FB /* ContactsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB04B45D20F61399006518FB /* ContactsUI.framework */; };
+		EB04B45820F61374006518FB /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB04B45720F61374006518FB /* AddressBook.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		EB04B45A20F61378006518FB /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB04B45920F61378006518FB /* AddressBookUI.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		EB04B45C20F61397006518FB /* Contacts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB04B45B20F61397006518FB /* Contacts.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		EB04B45E20F6139A006518FB /* ContactsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB04B45D20F61399006518FB /* ContactsUI.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		EB04B46020F613C3006518FB /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB04B45F20F613C3006518FB /* UIKit.framework */; };
 /* End PBXBuildFile section */
 
@@ -341,6 +341,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 3AHZ82SGX3;
 				INFOPLIST_FILE = DMContactBookDemo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -358,6 +359,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 3AHZ82SGX3;
 				INFOPLIST_FILE = DMContactBookDemo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
