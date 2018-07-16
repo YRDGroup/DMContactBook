@@ -80,24 +80,6 @@ Example apps for iOS are included with the project. Here is one simple usage pat
 }
 ```
 
-While simple, the above example is complete. A clock view creates a KVO controller to observe the clock date property. A block callback is used to handle initial and change notification. Unobservation happens implicitly on controller deallocation, since a strong reference to the `KVOController` is kept. 
-
-Note: the observer specified must support weak references. The zeroing weak reference guards against notification of a deallocated observer instance.
-
-#### NSObject Category
-For an even easier usage, just `#import <KVOController/NSObject+FBKVOController.h>` for an automatic `KVOController` property on all objects.
-
-```objc
-[self.KVOController observe:clock keyPath:@"date" options:NSKeyValueObservingOptionInitial|NSKeyValueObservingOptionNew action:@selector(updateClockWithDateChange:)];
-```
-
-## Swift
-
-KVOController works great in Swift but there are few requirements:
-
-- Your observer should subclass `NSObject`.
-- Properties that you observe must be marked as `dynamic`.
-
 ## Installation
 
 To install using [CocoaPods](https://github.com/cocoapods/cocoapods), add the following to your project Podfile:
@@ -108,4 +90,4 @@ pod 'DMContactBook', '~>1.0.1'
 
 ## License
 
-DMContactBook is released under a BSD License. See LICENSE file for details.
+DMContactBook is released under a MIT License. See LICENSE file for details.
