@@ -7,12 +7,30 @@
 //
 
 #import "DMContactBookHandle.h"
-@interface DMContactBookHandle ()
 
-#if NSFoundationVersionNumber >= __IPHONE_9_0
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_9_0
+#import "DMCNContactPickerViewController.h"
+#else
+#import "DMABPeoplePickerNavigationController.h"
+#endif
+
+#define kRootViewController [UIApplication sharedApplication].keyWindow.rootViewController
+
+
+@interface DMContactBookHandle ()<UINavigationControllerDelegate,
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_9_0
+CNContactPickerDelegate
+#else
+ABPeoplePickerNavigationControllerDelegate
+#endif
+>
+
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_9_0
 /** iOS9之后的通讯录对象*/
 @property (nonatomic, strong) CNContactStore *contactStore;
 #endif
+
+@property (nonatomic, copy) DMUISingleContactsBlock singleBlock;
 
 @end
 
@@ -27,11 +45,10 @@
 }
 
 
-
 - (void)requestAuthorizationWithSuccessBlock:(void (^)(BOOL result))successOrFail
 {
 
-#if NSFoundationVersionNumber >= __IPHONE_9_0
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_9_0
         // 1.判断是否授权成功,若授权成功直接return
     CNAuthorizationStatus status = [CNContactStore authorizationStatusForEntityType:CNEntityTypeContacts];
     if (status == CNAuthorizationStatusAuthorized) \
@@ -89,14 +106,14 @@
  */
 - (void)getAddressBookDataSource:(DMContactBookPersonModelBlock)personModel authorizationFailure:(AuthorizationFailure)failure
 {
-#if NSFoundationVersionNumber >= __IPHONE_9_0
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_9_0
         [self getDataSourceFrom_IOS9_Later:personModel authorizationFailure:failure];
 #else
         [self getDataSourceFrom_IOS9_Ago:personModel authorizationFailure:failure];
 #endif
 }
 
-#if NSFoundationVersionNumber < __IPHONE_9_0
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_9_0
 
 // IOS9之前获取通讯录的方法
 - (void)getDictDataSourceFrom_IOS9_Ago:(DMContactBookPersonDictBlock)personDict authorizationFailure:(AuthorizationFailure)failure
@@ -211,12 +228,6 @@
         failure ? failure() : nil;
         return;
     }
-    // 3.获取联系人
-    // 3.1.创建联系人仓库
-    //CNContactStore *store = [[CNContactStore alloc] init];
-    
-    // 3.2.创建联系人的请求对象
-    // keys决定能获取联系人哪些信息,例:姓名,电话,头像等
     NSArray *fetchKeys = @[[CNContactFormatter descriptorForRequiredKeysForStyle:CNContactFormatterStyleFullName],CNContactNicknameKey,CNContactFamilyNameKey,CNContactOrganizationNameKey,CNContactNoteKey,CNContactPhoneNumbersKey];
     CNContactFetchRequest *request = [[CNContactFetchRequest alloc] initWithKeysToFetch:fetchKeys];
     
@@ -297,12 +308,12 @@
 /**
  *  1.返回每个联系人的字典-----是字典类型方便转换上传通讯录到SERVER
  *
- *  @param DMContactBookPersonDictBlock 单个联系人字典
+ *  @param personDict 单个联系人字典
  *  @param failure     授权失败的Block
  */
 - (void)getDictAddressBookDataSource:(DMContactBookPersonDictBlock)personDict authorizationFailure:(AuthorizationFailure)failure
 {
-#if NSFoundationVersionNumber >= __IPHONE_9_0
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_9_0
     [self getDictDataSourceFrom_IOS9_Later:personDict authorizationFailure:failure];
 #else
     [self getDictDataSourceFrom_IOS9_Ago:personDict authorizationFailure:failure];
@@ -335,9 +346,59 @@
     return string;
 }
 
+- (void)getSingleContactsHandler:(DMUISingleContactsBlock)singleBlock {
+
+    self.singleBlock = singleBlock;
+
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_9_0
+    
+        // 1.获取授权状态
+        CNAuthorizationStatus status = [CNContactStore authorizationStatusForEntityType:CNEntityTypeContacts];
+        // 2.如果没有授权,先执行授权失败的block后return
+        if (status != CNAuthorizationStatusAuthorized)
+        {
+            NSMutableDictionary *resultDic = [NSMutableDictionary dictionaryWithCapacity:3];
+            [resultDic setObject:@"-1" forKey:@"code"];
+            [resultDic setObject:@"授权失败或未授权" forKey:@"msg"];
+            singleBlock(nil,resultDic);
+            return;
+        }
+    
+        CNContactStore *contactStore = [[CNContactStore alloc] init];
+        [contactStore requestAccessForEntityType:CNEntityTypeContacts completionHandler:^(BOOL granted, NSError * _Nullable error) {
+            if (granted) {
+                DMCNContactPickerViewController *picker = [[DMCNContactPickerViewController alloc] init];
+                picker.delegate = self;
+                [kRootViewController presentViewController:picker animated:YES completion:^{}];
+                
+            }
+            
+        }];
+#else
+    
+    // 1.获取授权的状态
+    ABAuthorizationStatus status = ABAddressBookGetAuthorizationStatus();
+    // 2.如果没有授权,先执行授权失败的block后return
+    if (status != kABAuthorizationStatusAuthorized/** 已经授权*/)
+    {
+        NSMutableDictionary *resultDic = [NSMutableDictionary dictionaryWithCapacity:3];
+        [resultDic setObject:@"-1" forKey:@"code"];
+        [resultDic setObject:@"授权失败或未授权" forKey:@"msg"];
+        singleBlock(nil,resultDic);
+        return;
+    }
+    DMABPeoplePickerNavigationController *peoplePicker = [[DMABPeoplePickerNavigationController alloc] init];
+    peoplePicker.peoplePickerDelegate = self;
+    [kRootViewController presentViewController:peoplePicker animated:YES completion:nil];
+    
+#endif
+}
+
+
+
 #pragma mark - lazy
 
-#if NSFoundationVersionNumber >= __IPHONE_9_0
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_9_0
 - (CNContactStore *)contactStore
 {
     if(!_contactStore)
@@ -346,5 +407,165 @@
     }
     return _contactStore;
 }
+
+// 通讯录列表 - 点击某个联系人 - 详情页 - 点击一个号码, 返回
+- (void)contactPicker:(CNContactPickerViewController *)picker didSelectContactProperty:(CNContactProperty *)contactProperty {
+    
+    if ([contactProperty.key isEqualToString:@"phoneNumbers"]) {
+        
+        CNContact *contact = contactProperty.contact;
+        // 创建联系人模型
+        // 获取联系人全名
+        NSString *fullName = [CNContactFormatter stringFromContact:contact style:CNContactFormatterStyleFullName]?:@"Z未命名";
+        NSString *nickyName = contact.nickname?:@"Z未命名昵称";
+        NSString *familyName = contact.familyName?:@"Z未命名姓氏";
+        NSString *org = contact.organizationName?:@"";
+        NSString *note = contact.note?:@"";
+        NSString *type = contactProperty.label?:@"未知类型";
+        type = [self removeSpecialSubString:type];
+        NSString *number = [contactProperty.value stringValue]?:@"无号码";
+        number = [self removeSpecialSubString:number];
+        
+        NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+        [dic setValue:fullName forKey:@"fullName"];
+        [dic setValue:nickyName forKey:@"nickyName"];
+        [dic setValue:familyName forKey:@"familyName"];
+        [dic setValue:org forKey:@"org"];
+        [dic setValue:note forKey:@"note"];
+        [dic setValue:type forKey:@"type"];
+        [dic setValue:number forKey:@"number"];
+        DMContactBookPersonModel *model = [DMContactBookPersonModel new];
+        model.fullName = dic[@"fullName"];
+        model.nickyName = dic[@"nickyName"];
+        model.familyName = dic[@"familyName"];
+        model.org = dic[@"org"];
+        model.note = dic[@"note"];
+        model.type = dic[@"type"];
+        model.number = dic[@"number"];
+        
+        if(self.singleBlock) {
+            NSMutableDictionary *resultDic = [NSMutableDictionary dictionaryWithCapacity:3];
+            [resultDic setObject:@"1" forKey:@"code"];
+            [resultDic setObject:@"授权成功" forKey:@"msg"];
+            [resultDic setObject:dic forKey:@"value"];
+            self.singleBlock(model,resultDic);
+        }
+        
+    } else {
+        if (self.singleBlock) {
+            NSMutableDictionary *resultDic = [NSMutableDictionary dictionaryWithCapacity:3];
+            [resultDic setObject:@"-4" forKey:@"code"];
+             [resultDic setObject:@"用户未选中号码" forKey:@"msg"];
+            self.singleBlock(nil,resultDic);
+        }
+    }
+    
+    
+}
+
+- (void)contactPickerDidCancel:(CNContactPickerViewController *)picker {
+    
+    if (self.singleBlock) {
+        NSMutableDictionary *resultDic = [NSMutableDictionary dictionaryWithCapacity:3];
+        [resultDic setObject:@"-2" forKey:@"code"];
+        [resultDic setObject:@"用户取消" forKey:@"msg"];
+        self.singleBlock(nil,resultDic);
+    }
+    
+}
+
+#else
+
+#pragma mark - ABPeoplePickerNavigationController delegate
+// 在联系人详情页可直接发信息/打电话
+- (void)peoplePickerNavigationController:(ABPeoplePickerNavigationController *)peoplePicker didSelectPerson:(ABRecordRef)person property:(ABPropertyID)property identifier:(ABMultiValueIdentifier)identifier{
+    
+    ABMultiValueRef valuesRef = ABRecordCopyValue(person, kABPersonPhoneProperty);
+    CFIndex index = ABMultiValueGetIndexForIdentifier(valuesRef,identifier);
+    
+    if (index >= 0) {
+
+        //获取全名
+        NSString *fullName = (__bridge_transfer NSString *)ABRecordCopyCompositeName(person)?:@"Z未命名";
+        //获取当前联系人的昵称
+        NSString*nickyName=(__bridge NSString*)(ABRecordCopyValue(person, kABPersonNicknameProperty))?:@"Z未命名昵称";
+        //获取当前联系人姓氏
+        NSString*familyName=(__bridge NSString *)(ABRecordCopyValue(person, kABPersonLastNameProperty))?:@"Z未命名姓氏";
+        //获取当前联系人的公司
+        NSString*org=(__bridge NSString*)(ABRecordCopyValue(person, kABPersonOrganizationProperty))?:@"";
+        //备注
+        NSString*note=(__bridge NSString*)(ABRecordCopyValue(person, kABPersonNoteProperty))?:@"";
+        
+        CFStringRef value = ABMultiValueCopyValueAtIndex(valuesRef,index);
+        
+        NSString *firstName = (__bridge NSString *)ABRecordCopyValue(person, kABPersonFirstNameProperty);
+        if (!firstName) {
+            firstName = @""; //!!!: 注意这里firstName/lastName是 给@"" 还是 @" ", 如果姓名要求无空格, 则必须为@""
+        }
+        
+        NSString *lastName=(__bridge NSString *)ABRecordCopyValue(person, kABPersonLastNameProperty);
+        if (!lastName) {
+            lastName = @"";
+        }
+        NSString *phoneNumber = (__bridge NSString*)value;
+        NSString *number = [self removeSpecialSubString:phoneNumber];
+        NSString *type = (__bridge_transfer NSString *)ABMultiValueCopyLabelAtIndex(valuesRef, index);
+        type = [self removeSpecialSubString:type];
+        
+        NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+        [dic setValue:fullName forKey:@"fullName"];
+        [dic setValue:nickyName forKey:@"nickyName"];
+        [dic setValue:familyName forKey:@"familyName"];
+        [dic setValue:org forKey:@"org"];
+        [dic setValue:note forKey:@"note"];
+        [dic setValue:type forKey:@"type"];
+        [dic setValue:number forKey:@"number"];
+        
+        DMContactBookPersonModel *model = [DMContactBookPersonModel new];
+        model.fullName = dic[@"fullName"];
+        model.nickyName = dic[@"nickyName"];
+        model.familyName = dic[@"familyName"];
+        model.org = dic[@"org"];
+        model.note = dic[@"note"];
+        model.type = dic[@"type"];
+        model.number = dic[@"number"];
+        
+        if (self.singleBlock) {
+            NSMutableDictionary *resultDic = [NSMutableDictionary dictionaryWithCapacity:3];
+            [resultDic setObject:@"1" forKey:@"code"];
+            [resultDic setObject:@"授权成功" forKey:@"msg"];
+            [resultDic setObject:dic forKey:@"value"];
+            self.singleBlock(model,resultDic);
+        }
+
+    } else {
+        if (self.singleBlock) {
+            NSMutableDictionary *resultDic = [NSMutableDictionary dictionaryWithCapacity:3];
+            [resultDic setObject:@"-3" forKey:@"code"];
+            [resultDic setObject:@"用户无号码" forKey:@"msg"];
+            self.singleBlock(nil, resultDic);
+        }
+    }
+    
+    [kRootViewController dismissViewControllerAnimated:YES completion:^{
+        
+        
+    }];
+}
+
+- (void)peoplePickerNavigationControllerDidCancel:(ABPeoplePickerNavigationController *)peoplePicker
+{
+    if (self.singleBlock) {
+        NSMutableDictionary *resultDic = [NSMutableDictionary dictionaryWithCapacity:3];
+        [resultDic setObject:@"-2" forKey:@"code"];
+        [resultDic setObject:@"用户取消" forKey:@"msg"];
+        self.singleBlock(nil, resultDic);
+    }
+}
+
+
 #endif
+
+
+
 @end

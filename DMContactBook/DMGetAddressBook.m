@@ -7,10 +7,14 @@
 //
 
 #import "DMGetAddressBook.h"
-
+#import <UIKit/UIKit.h>
 
 #define START NSDate *startTime = [NSDate date]
 #define END NSLog(@"Time: %f", -[startTime timeIntervalSinceNow])
+
+@interface DMGetAddressBook ()
+
+@end
 
 @implementation DMGetAddressBook
 
@@ -212,5 +216,25 @@
     if ([aString hasPrefix:@"地"]) { return @"di";   }
     if ([aString hasPrefix:@"重"]) { return @"chong";}
     return pinyinString;
+}
+
+
+#pragma mark - 调用系统通讯录 选择并获取联系人信息
++ (void)callContactsHandler:(DMUISingleContactsBlock)handler{
+    
+    [[DMContactBookHandle shareInstance] requestAuthorizationWithSuccessBlock:^(BOOL result) {
+        if (result) {
+             [[DMContactBookHandle shareInstance] getSingleContactsHandler:handler];
+        } else {
+            NSMutableDictionary *resultDic = [NSMutableDictionary dictionaryWithCapacity:3];
+            [resultDic setObject:@"-1" forKey:@"code"];
+            [resultDic setObject:@"授权失败或未授权" forKey:@"msg"];
+            if (handler) {
+                handler(nil,resultDic);
+            }
+        }
+    }];
+   
+    
 }
 @end

@@ -23,6 +23,9 @@ typedef void(^DMContactBookPersonModelBlock)(NSArray<DMContactBookPersonModel *>
 /** 1.一个联系人相关的字典数据 方便获取转JSON上传 **/
 typedef void(^DMContactBookPersonDictBlock)(NSArray<NSDictionary *> *dicArray);
 
+typedef void(^DMUISingleContactsBlock)(DMContactBookPersonModel *contact,NSDictionary *info);
+
+
 /** 授权失败的Block*/
 typedef void(^AuthorizationFailure)(void);
 
@@ -59,6 +62,8 @@ typedef void(^AuthorizationFailure)(void);
  *  @param failure     授权失败的Block
  */
 - (void)getDictAddressBookDataSource:(DMContactBookPersonDictBlock)personDict authorizationFailure:(AuthorizationFailure)failure;
+
+- (void)getSingleContactsHandler:(DMUISingleContactsBlock)singleBlock;
 
 + (BOOL)dm_isBlankString:(NSString *)string;
 

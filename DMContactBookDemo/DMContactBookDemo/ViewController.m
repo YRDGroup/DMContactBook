@@ -29,6 +29,12 @@
     
     
 }
+- (IBAction)getsingleButtonPressed:(id)sender {
+    
+    [DMGetAddressBook callContactsHandler:^(DMContactBookPersonModel *contact, NSDictionary *info) {
+        NSLog(@"info  %@",info);
+    }];
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

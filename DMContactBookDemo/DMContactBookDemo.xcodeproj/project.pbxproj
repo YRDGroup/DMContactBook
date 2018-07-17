@@ -21,6 +21,8 @@
 		EB04B45C20F61397006518FB /* Contacts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB04B45B20F61397006518FB /* Contacts.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		EB04B45E20F6139A006518FB /* ContactsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB04B45D20F61399006518FB /* ContactsUI.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		EB04B46020F613C3006518FB /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB04B45F20F613C3006518FB /* UIKit.framework */; };
+		EBDEAD4F20FDDCD9007622BD /* DMCNContactPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EBDEAD4C20FDDCD8007622BD /* DMCNContactPickerViewController.m */; };
+		EBDEAD5020FDDCD9007622BD /* DMABPeoplePickerNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = EBDEAD4E20FDDCD9007622BD /* DMABPeoplePickerNavigationController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,6 +47,10 @@
 		EB04B45B20F61397006518FB /* Contacts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Contacts.framework; path = System/Library/Frameworks/Contacts.framework; sourceTree = SDKROOT; };
 		EB04B45D20F61399006518FB /* ContactsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ContactsUI.framework; path = System/Library/Frameworks/ContactsUI.framework; sourceTree = SDKROOT; };
 		EB04B45F20F613C3006518FB /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		EBDEAD4B20FDDCD8007622BD /* DMCNContactPickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMCNContactPickerViewController.h; sourceTree = "<group>"; };
+		EBDEAD4C20FDDCD8007622BD /* DMCNContactPickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DMCNContactPickerViewController.m; sourceTree = "<group>"; };
+		EBDEAD4D20FDDCD9007622BD /* DMABPeoplePickerNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMABPeoplePickerNavigationController.h; sourceTree = "<group>"; };
+		EBDEAD4E20FDDCD9007622BD /* DMABPeoplePickerNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DMABPeoplePickerNavigationController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +106,10 @@
 		EB04B44B20F5FE64006518FB /* DMContactBook */ = {
 			isa = PBXGroup;
 			children = (
+				EBDEAD4D20FDDCD9007622BD /* DMABPeoplePickerNavigationController.h */,
+				EBDEAD4E20FDDCD9007622BD /* DMABPeoplePickerNavigationController.m */,
+				EBDEAD4B20FDDCD8007622BD /* DMCNContactPickerViewController.h */,
+				EBDEAD4C20FDDCD8007622BD /* DMCNContactPickerViewController.m */,
 				EB04B44D20F5FEF9006518FB /* DMContactBookPersonModel.h */,
 				EB04B44E20F5FEF9006518FB /* DMContactBookPersonModel.m */,
 				EB04B45020F5FF49006518FB /* DMGetAddressBook.h */,
@@ -193,9 +203,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EBDEAD4F20FDDCD9007622BD /* DMCNContactPickerViewController.m in Sources */,
 				EB04B43A20F5FE4D006518FB /* ViewController.m in Sources */,
 				EB04B44F20F5FEF9006518FB /* DMContactBookPersonModel.m in Sources */,
 				EB04B44520F5FE4F006518FB /* main.m in Sources */,
+				EBDEAD5020FDDCD9007622BD /* DMABPeoplePickerNavigationController.m in Sources */,
 				EB04B43720F5FE4D006518FB /* AppDelegate.m in Sources */,
 				EB04B45520F5FF77006518FB /* DMContactBookHandle.m in Sources */,
 				EB04B45220F5FF49006518FB /* DMGetAddressBook.m in Sources */,

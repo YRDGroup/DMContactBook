@@ -60,4 +60,13 @@ typedef void(^AddressBookDictBlock)(NSDictionary<NSString *,NSArray *> *addressB
  */
 + (void)getOrderAddressBook:(AddressBookDictBlock)addressBookInfo authorizationFailure:(AuthorizationFailure)failure;
 
+
+/**
+ *  调用系统通讯录 选择并获取联系人信息
+ *
+ *  @param handler 选取联系人后的回调
+ */
++ (void)callContactsHandler:(DMUISingleContactsBlock)handler;
+
+
 @end
