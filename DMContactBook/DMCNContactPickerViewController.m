@@ -6,6 +6,7 @@
 //  Copyright © 2017年 complany.com. All rights reserved.
 //
 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_9_0
 #import "DMCNContactPickerViewController.h"
 
 @interface DMCNContactPickerViewController ()
@@ -26,6 +27,8 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+#endif
 
 
 /*

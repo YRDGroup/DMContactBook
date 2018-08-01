@@ -6,6 +6,7 @@
 //  Copyright © 2017年 complany.com. All rights reserved.
 //
 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_9_0
 #import "DMABPeoplePickerNavigationController.h"
 
 @interface DMABPeoplePickerNavigationController ()
@@ -38,3 +39,5 @@
 */
 
 @end
+
+#endif
